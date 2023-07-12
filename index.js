@@ -14,7 +14,7 @@ const collName = 'images';
 
 
 app.use(cors({
-    origin:["http://localhost:3000","http://localhost:5000"],
+    origin:["https://cancerclient.onrender.com","http://localhost:5000"],
     methods:["GET","POST"],
     credentials: true}))
 app.use(express.json())
