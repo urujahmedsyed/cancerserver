@@ -78,7 +78,10 @@ app.post('/api/login', async (req,res)=>{
 
 app.get('/api/user', async (req, res) => {
   try {
-    const token = req.cookies.token; // Assuming the token is stored in a cookie
+    const token = req.headers.authorization; // Retrieve the token from the request headers
+    if (!token) {
+      return res.status(401).json({ status: 'error', message: 'Token not provided' });
+    }
     const decoded = jwt.verify(token, 'secret123'); // Verify the token using the secret
     const user = await User.findOne({ uname: decoded.uname });
     if (user) {
@@ -88,9 +91,13 @@ app.get('/api/user', async (req, res) => {
     }
   } catch (err) {
     console.error('Error fetching user:', err);
+    if (err.name === 'JsonWebTokenError') {
+      return res.status(401).json({ status: 'error', message: 'Invalid token' });
+    }
     return res.status(500).json({ status: 'error', user: null });
   }
 });
+
   
 
 app.post('/api/data', async (req, res) => {
