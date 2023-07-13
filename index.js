@@ -77,19 +77,20 @@ app.post('/api/login', async (req,res)=>{
 });
 
 app.get('/api/user', async (req, res) => {
-    try {
-      const token = req.cookies.token; // Assuming the token is stored in a cookie
-      const decoded = jwt.verify(token, 'secret123'); // Verify the token using the secret
-      const user = await User.findOne({ uname: decoded.uname });
-      if (user) {
-        return res.status(200).json({ status: 'ok', user: user });
-      } else {
-        return res.status(404).json({ status: 'error', user: null });
-      }
-    } catch (err) {
-      return res.status(500).json({ status: 'error', user: null });
+  try {
+    const token = req.cookies.token; // Assuming the token is stored in a cookie
+    const decoded = jwt.verify(token, 'secret123'); // Verify the token using the secret
+    const user = await User.findOne({ uname: decoded.uname });
+    if (user) {
+      return res.status(200).json({ status: 'ok', user: user.toObject() }); // Convert the user object to plain JavaScript object
+    } else {
+      return res.status(404).json({ status: 'error', user: null });
     }
-  });
+  } catch (err) {
+    console.error('Error fetching user:', err);
+    return res.status(500).json({ status: 'error', user: null });
+  }
+});
   
 
 app.post('/api/data', async (req, res) => {
