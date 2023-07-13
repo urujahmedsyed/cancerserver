@@ -78,7 +78,7 @@ app.post('/api/login', async (req,res)=>{
 
 app.get('/api/user', async (req, res) => {
   try {
-    const token = req.headers.authorization; // Retrieve the token from the request headers
+    const token = req.body; // Retrieve the token from the request headers
     if (!token) {
       return res.status(401).json({ status: 'error', message: 'Token not provided' });
     }
