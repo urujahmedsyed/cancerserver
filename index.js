@@ -79,7 +79,7 @@ app.post('/api/login', async (req,res)=>{
 app.get('/api/user', async (req, res) => {
   try {
     // const token = req.body; // Retrieve the token from the request headers
-    const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmFtZSI6InVydWphaG1lZHN5ZWQiLCJpYXQiOjE2ODkyMzA0NjF9.NIBnTHll47vpYS2LBtuTHyUsnZ0j3rjFRyIJNUt1NU8";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmFtZSI6InVydWphaG1lZHN5ZWQiLCJpYXQiOjE2ODkyMjQwNTB9.y0PEtLN4BqFPldOwo3aIJebbo9mlV6q0vd04UfLgGTM";
     if (!token) {
       return res.status(401).json({ status: 'error', message: 'Token not provided' });
     }
