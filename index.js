@@ -54,6 +54,7 @@ app.post("/api/signup", async (req, res) => {
       auth: {
         user: "breastcancerotpservice@gmail.com",
         pass: "gkeysjskrawyexgf",
+      },
       tls: {
         rejectUnauthorized: false,
       },
