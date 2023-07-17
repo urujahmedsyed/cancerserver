@@ -112,20 +112,11 @@ Img.find({}).then(val => {
 });
 
 
-app.post('/api/signup', async (req,res) => {
-  console.log(req.body);
-  try {
-      const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false });
-      const user = await User.create({
-          name: req.body.name,
-          email: req.body.email,
-          uname: req.body.uname,
-          password: req.body.password,
-          mobile: req.body.mobile,
-          hospital: req.body.hospital,
-          otp: otp
-      });
+app.post('/api/send-otp', async (req, res) => {
+  const { email } = req.body;
+  const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false });
 
+  try {
       // Create a transporter
       let transporter = nodemailer.createTransport({
           service: "gmail",
@@ -138,7 +129,7 @@ app.post('/api/signup', async (req,res) => {
       // Define the email options
       let mailOptions = {
           from: "breastcancerotpservice@gmail.com",
-          to: req.body.email,
+          to: email,
           subject: "Account Verification OTP",
           text: `Your OTP for account verification is: ${otp}`,
       };
@@ -146,11 +137,40 @@ app.post('/api/signup', async (req,res) => {
       // Send the email
       await transporter.sendMail(mailOptions);
 
-      res.json({ status: 'yaya' });
+      res.json({ status: 'ok' });
   } catch(err) {
-      res.json({ status: 'error', error: 'Duplicate username' });
+      res.json({ status: 'error', error: 'Failed to send OTP' });
   }
 });
+
+app.post('/api/signup', async (req, res) => {
+  console.log(req.body);
+  try {
+      const { email, otp } = req.body;
+      const user = await User.findOne({ email });
+
+      if (user) {
+          if (user.otp === otp) {
+              // Correct OTP
+              // Create the user account
+              // ... (existing code for creating user account)
+
+              // Delete the OTP from the user object
+              await User.updateOne({ email }, { otp: null });
+
+              res.json({ status: 'yaya' });
+          } else {
+              // Incorrect OTP
+              res.json({ status: 'error', error: 'Invalid OTP' });
+          }
+      } else {
+          res.json({ status: 'error', error: 'User not found' });
+      }
+  } catch(err) {
+      res.json({ status: 'error', error: 'Failed to create user account' });
+  }
+});
+
 
 app.post('/api/image', async (req, res) => {
     try {
