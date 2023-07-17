@@ -63,6 +63,31 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+app.post('/api/verify-otp', async (req, res) => {
+  const { otp, email } = req.body;
+  
+  try {
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      return res.json({ status: 'error', message: 'User not found' });
+    }
+    
+    if (user.otp !== otp) {
+      return res.json({ status: 'error', message: 'Invalid OTP' });
+    }
+    
+    // OTP verification successful
+    user.otp = ''; // Clear OTP
+    await user.save();
+    
+    return res.json({ status: 'verified' });
+  } catch (err) {
+    console.error('Error verifying OTP:', err);
+    return res.status(500).json({ status: 'error', message: 'Failed to verify OTP' });
+  }
+});
+
 app.get('/api/user', async (req, res) => {
     try {
         const token = req.headers.authorization;
