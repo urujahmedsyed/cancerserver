@@ -53,8 +53,7 @@ app.post("/api/signup", async (req, res) => {
       service: "gmail",
       auth: {
         user: "breastcancerotpservice@gmail.com",
-        pass: "1014501890076",
-      },
+        pass: "gkeysjskrawyexgf",
       tls: {
         rejectUnauthorized: false,
       },
@@ -96,7 +95,7 @@ app.post("/api/sendOtp", async (req, res) => {
       service: "gmail",
       auth: {
         user: "breastcancerotpservice@gmail.com",
-        pass: "1014501890076",
+        pass: "gkeysjskrawyexgf",
       },
     });
 
