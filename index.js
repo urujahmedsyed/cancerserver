@@ -92,56 +92,40 @@ app.post('/api/data', async (req, res) => {
 });
 
 app.post('/api/signup', async (req, res) => {
-  console.log(req.body);
-  try {
-      const { email, otp } = req.body;
-      const user = await User.findOne({ email });
+    console.log(req.body);
+    try {
+        const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false });
+        const user = await User.create({
+            name: req.body.name,
+            email: req.body.email,
+            uname: req.body.uname,
+            password: req.body.password,
+            mobile: req.body.mobile,
+            hospital: req.body.hospital,
+            otp: otp
+        });
 
-      if (user) {
-          return res.json({ status: 'error', error: 'Duplicate email' });
-      }
+        let transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "breastcancerotpservice@gmail.com",
+                pass: "gkeysjskrawyexgf",
+            },
+        });
 
-      if (otp) {
-          const existingUser = await User.findOne({ otp });
-          if (existingUser) {
-              return res.json({ status: 'error', error: 'Invalid OTP' });
-          }
-      }
+        let mailOptions = {
+            from: "breastcancerotpservice@gmail.com",
+            to: req.body.email,
+            subject: "Account Verification OTP",
+            text: `Your OTP for account verification is: ${otp}`,
+        };
 
-      const newUser = await User.create({
-          name: req.body.name,
-          email: req.body.email,
-          uname: req.body.uname,
-          password: req.body.password,
-          mobile: req.body.mobile,
-          hospital: req.body.hospital,
-          otp: otp
-      });
+        await transporter.sendMail(mailOptions);
 
-      // Create a transporter
-      let transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-              user: "breastcancerotpservice@gmail.com",
-              pass: "gkeysjskrawyexgf",
-          },
-      });
-
-      // Define the email options
-      let mailOptions = {
-          from: "breastcancerotpservice@gmail.com",
-          to: req.body.email,
-          subject: "Account Verification OTP",
-          text: `Your OTP for account verification is: ${otp}`,
-      };
-
-      // Send the email
-      await transporter.sendMail(mailOptions);
-
-      res.json({ status: 'yaya' });
-  } catch(err) {
-      res.json({ status: 'error', error: 'Failed to create user account' });
-  }
+        res.json({ status: 'yaya' });
+    } catch (err) {
+        res.json({ status: 'error', error: 'Duplicate username' });
+    }
 });
 
 app.post('/api/image', async (req, res) => {
