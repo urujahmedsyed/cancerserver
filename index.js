@@ -83,6 +83,11 @@ app.post("/api/signup", async (req, res) => {
 app.post("/api/sendOtp", async (req, res) => {
   const { email, phone } = req.body;
 
+  if (!validator.isEmail(email)) {
+    res.json({ status: "false", error: "Invalid email" });
+    return;
+  }
+  
   const otpEntry = new Otp({
     email,
     otp,
