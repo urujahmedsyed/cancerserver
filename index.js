@@ -51,8 +51,8 @@ app.post("/api/signup", async (req, res) => {
     let transporter = nodemailer.createTransport({
       service:'gmail',
       auth: {
-          user: 'bc.predict@gmail.com',
-          pass: 'xqfrpccrckwgcipp'
+          user: 'breastcancerotpservice@gmail.com',
+          pass: '1014501890076'
       },
       tls:{
           rejectUnauthorized:false
@@ -60,7 +60,7 @@ app.post("/api/signup", async (req, res) => {
   });
 
     let mailOptions = {
-      from: '"Breast Cancer Prediction" <bc.predict@gmail.com>',
+      from: '"Breast Cancer Prediction" <breastcancerotpservice@gmail.com>',
       to: req.body.email,
       subject: "Account Verification",
       text: `You have recently created an account with us.\nYour Verification OTP is ${otp}\nIf you haven't made an account please contact the site administrator.`,
@@ -94,13 +94,13 @@ app.post("/api/sendOtp", async (req, res) => {
     let transporter = nodemailer.createTransport({
       service:'gmail',
       auth: {
-          user: 'bc.predict@gmail.com',
-          pass: 'xqfrpccrckwgcipp'
+          user: 'breastcancerotpservice@gmail.com',
+          pass: '1014501890076'
       },
     });
 
     let mailOptions = {
-      from: "bc.predict@gmail.com", // Replace with your email
+      from: "breastcancerotpservice@gmail.com", // Replace with your email
       to: email,
       subject: "OTP Verification",
       text: `Your Verification OTP is ${otp}\nIf you haven't made an account please contact the site administrator.`,
