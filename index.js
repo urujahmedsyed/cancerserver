@@ -65,28 +65,29 @@ app.post('/api/login', async (req, res) => {
 
 app.post('/api/verify-otp', async (req, res) => {
   const { otp, email } = req.body;
-  
+
   try {
     const user = await User.findOne({ email });
-    
+
     if (!user) {
-      return res.json({ status: 'error', message: 'User not found' });
+      return res.status(404).json({ status: 'error', message: 'User not found' });
     }
-    
+
     if (user.otp !== otp) {
-      return res.json({ status: 'error', message: 'Invalid OTP' });
+      return res.status(400).json({ status: 'error', message: 'Invalid OTP' });
     }
-    
+
     // OTP verification successful
     user.otp = ''; // Clear OTP
     await user.save();
-    
+
     return res.json({ status: 'verified' });
   } catch (err) {
     console.error('Error verifying OTP:', err);
     return res.status(500).json({ status: 'error', message: 'Failed to verify OTP' });
   }
 });
+
 
 app.get('/api/user', async (req, res) => {
     try {
@@ -171,32 +172,33 @@ app.post('/api/image', async (req, res) => {
 });
 
 app.post('/api/send-otp', async (req, res) => {
-    const { email } = req.body;
-    const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false });
+  const { email } = req.body;
+  const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false });
 
-    try {
-        let transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: "breastcancerotpservice@gmail.com",
-                pass: "gkeysjskrawyexgf",
-            },
-        });
+  try {
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "breastcancerotpservice@gmail.com",
+        pass: "gkeysjskrawyexgf",
+      },
+    });
 
-        let mailOptions = {
-            from: "breastcancerotpservice@gmail.com",
-            to: email,
-            subject: "Account Verification OTP",
-            text: `Your OTP for account verification is: ${otp}`,
-        };
+    let mailOptions = {
+      from: "breastcancerotpservice@gmail.com",
+      to: email,
+      subject: "Account Verification OTP",
+      text: `Your OTP for account verification is: ${otp}`,
+    };
 
-        await transporter.sendMail(mailOptions);
+    await transporter.sendMail(mailOptions);
 
-        res.json({ status: 'ok' });
-    } catch (err) {
-        res.json({ status: 'error', error: 'Failed to send OTP' });
-    }
+    res.json({ status: 'ok', otp });
+  } catch (err) {
+    res.json({ status: 'error', error: 'Failed to send OTP' });
+  }
 });
+
 
 app.listen(12345, () => {
     console.log('server started on port 12345');
